@@ -1,0 +1,3 @@
+interface:
+  display_name: "LoRA 算子开发与验证"
+  short_description: "联合验证 Ascend LoRA 算子布局、缩放、数值精度与性能收益"

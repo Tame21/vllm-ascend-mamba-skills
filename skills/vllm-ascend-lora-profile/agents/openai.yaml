@@ -1,0 +1,3 @@
+interface:
+  display_name: "LoRA 性能与 NPU 采集"
+  short_description: "分析 Ascend LoRA 冷热加载、prefill/decode 与多适配器性能"

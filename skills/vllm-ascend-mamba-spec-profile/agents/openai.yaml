@@ -1,0 +1,3 @@
+interface:
+  display_name: "Mamba 投机推理性能采集"
+  short_description: "采集 NPU profiling 并分析 Mamba 投机推理的 prefill 和 decode 性能"

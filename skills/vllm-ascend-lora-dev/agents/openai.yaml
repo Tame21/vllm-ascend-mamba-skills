@@ -1,0 +1,3 @@
+interface:
+  display_name: "LoRA 功能开发与回归"
+  short_description: "为 Ascend 新模型与执行组合接入 LoRA，并建立精度和性能回归"

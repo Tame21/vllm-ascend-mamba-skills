@@ -1,0 +1,3 @@
+interface:
+  display_name: "Mamba 投机推理精度定位"
+  short_description: "定位 Mamba 投机推理的 token、logits 和 recurrent state 精度首差"

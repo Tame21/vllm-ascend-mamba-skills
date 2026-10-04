@@ -1,0 +1,3 @@
+interface:
+  display_name: "LoRA 加载、切换与缓存"
+  short_description: "排查 Ascend 多 LoRA 的加载、槽位切换、缓存隔离与请求路由"

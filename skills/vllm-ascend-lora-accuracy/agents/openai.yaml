@@ -1,0 +1,3 @@
+interface:
+  display_name: "LoRA 精度定位"
+  short_description: "定位 Ascend LoRA 装载、增量、混批与图重放的精度首差"

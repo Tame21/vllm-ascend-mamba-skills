@@ -1,22 +1,50 @@
-# vLLM-Ascend Mamba 投机推理 Skills
+# vLLM-Ascend 开发 Skills
 
-`Tame21/vllm-ascend-mamba-skills` 是一组结合 vLLM 和 vLLM-Ascend 实现编写的中文技能，面向 Mamba/GDN 等 recurrent 或 hybrid 模型的投机推理开发。五个技能可单独使用，主文件保留排查决策，命令、源码索引和细节放在各自 `references/`。
+`Tame21/vllm-ascend-skills` 收录十个中文技能，结合 vLLM 与 vLLM-Ascend 源码，支持 Mamba/GDN 投机推理和 PEFT LoRA adapter 的开发、排障、精度定位与性能分析。每个技能可单独使用，详细命令、源码索引和测试覆盖说明放在对应的 `references/` 中。
 
-## 选哪个
+## Mamba/GDN 投机推理
 
-| Skill | 适用问题 | 主要产出 |
-| --- | --- | --- |
-| [vllm-ascend-mamba-debug](vllm-ascend-mamba-debug/SKILL.md) | 启动失败、patch 未生效、不清楚实际 runner/drafter、reject 后异常 | 最小复现、真实调用链、首个失效边界 |
-| [vllm-ascend-mamba-profile](vllm-ascend-mamba-profile/SKILL.md) | 采 profiling / prefill、TTFT 或投机吞吐回归 | NPU 采集命令、无采集基线、指标与时间线归因 |
-| [vllm-ascend-mamba-accuracy](vllm-ascend-mamba-accuracy/SKILL.md) | spec/graph/chunk/cache/混批导致输出偏差 | token → target logits → recurrent state 首差与数值证据 |
-| [vllm-ascend-mamba-state-cache](vllm-ascend-mamba-state-cache/SKILL.md) | 跨 block、前缀命中、拒绝回滚、重排或按层 KV 加载后出错 | 请求状态账本、copy/恢复契约和边界回归 |
-| [vllm-ascend-mamba-dev](vllm-ascend-mamba-dev/SKILL.md) | 新功能、runner 迁移、上游升级或 kernel/metadata 修改 | 修改层级、接口契约、已有测试映射和验证计划 |
+| 技能 | 用途 |
+| --- | --- |
+| [mamba-spec-debug](skills/vllm-ascend-mamba-spec-debug/SKILL.md) | 定位启动、patch、runner/drafter 与 reject 后异常，建立最小复现和实际调用链。 |
+| [mamba-spec-profile](skills/vllm-ascend-mamba-spec-profile/SKILL.md) | 采集 prefill / 投机推理的 NPU profiling，分析 TTFT、吞吐和时间线。 |
+| [mamba-spec-accuracy](skills/vllm-ascend-mamba-spec-accuracy/SKILL.md) | 对齐 token、target logits 与 recurrent state，定位 spec/graph/chunk/混批引起的首差。 |
+| [mamba-spec-state-cache](skills/vllm-ascend-mamba-spec-state-cache/SKILL.md) | 排查跨块状态拷贝、前缀命中、拒绝回滚、请求重排与 KV 加载时序。 |
+| [mamba-spec-dev](skills/vllm-ascend-mamba-spec-dev/SKILL.md) | 为功能开发、runner 迁移和上游升级选择实现层级、接口检查与回归测试。 |
+
+## LoRA adapter
+
+| 技能 | 用途 |
+| --- | --- |
+| [lora-accuracy](skills/vllm-ascend-lora-accuracy/SKILL.md) | 核对 adapter 身份、A/B/scale 与低秩增量，定位 TP/混批/graph/spec 后精度异常。 |
+| [lora-profile](skills/vllm-ascend-lora-profile/SKILL.md) | 区分冷加载、槽位切换和稳态计算，分析 prefill/decode 与多 adapter 性能。 |
+| [lora-kernel](skills/vllm-ascend-lora-kernel/SKILL.md) | 联合验证 BGMV/SGMV、packed matmul、Triton 路径的布局、数值契约与性能。 |
+| [lora-lifecycle](skills/vllm-ascend-lora-lifecycle/SKILL.md) | 跟踪 name → ID → slot → token 映射，排查热更新、LRU、混批串扰与缓存隔离。 |
+| [lora-dev](skills/vllm-ascend-lora-dev/SKILL.md) | 为新增模型、target module、TP/EP、量化、MTP 和 graph 组合设计实现与回归。 |
 
 ## 目录与使用方式
 
-本仓库根目录直接包含五个技能目录。克隆仓库不会自动安装技能；可以让助手读取所需 `SKILL.md`，也可以按所用助手的安装方式安装完整技能目录，保留 `references/`、`scripts/`（如有）和 `agents/`。
+十个完整技能位于本仓库的 `skills/` 下：
 
-源码检查和 NPU 测试还需要单独准备源码工作区：
+```text
+vllm-ascend-skills/
+├── README.md
+└── skills/
+    ├── vllm-ascend-mamba-spec-debug/
+    ├── vllm-ascend-mamba-spec-profile/
+    ├── vllm-ascend-mamba-spec-accuracy/
+    ├── vllm-ascend-mamba-spec-state-cache/
+    ├── vllm-ascend-mamba-spec-dev/
+    ├── vllm-ascend-lora-accuracy/
+    ├── vllm-ascend-lora-profile/
+    ├── vllm-ascend-lora-kernel/
+    ├── vllm-ascend-lora-lifecycle/
+    └── vllm-ascend-lora-dev/
+```
+
+克隆仓库不会自动安装技能。可以让助手直接读取所需 `SKILL.md`，也可以按所用助手的安装方式安装完整技能目录，保留 `references/`、`agents/` 和 `scripts/`（如有）。
+
+源码检查和 NPU 测试需要另行准备源码工作区，并向助手提供实际路径：
 
 ```text
 <源码工作区>/
@@ -24,39 +52,38 @@
 └── vllm-ascend/
 ```
 
-向助手提供该工作区的实际路径。技能中的 `vllm/...`、`vllm-ascend/...` 是相对于源码工作区的路径；源码和 NPU 命令所说的“工作区根目录”也指此处。技能仓可以放在其它位置；读取技能文件的下列示例，以及离线比较器的调用，则以本技能仓根目录为起点。
+技能中的 `vllm/...`、`vllm-ascend/...` 和源码命令所称的“工作区根目录”指这个双仓工作区；`V`、`A` 分别指两个源码仓根目录。若源码分开存放，先定位各自路径再调整命令。本技能仓可以放在其它位置，下列调用示例及比较器命令以本技能仓根目录为起点。
 
-## 可以直接交给助手的请求
+```text
+请读取 skills/vllm-ascend-mamba-spec-debug/SKILL.md，结合启动命令和报错，
+确认 V2 runner、MTP speculator 和 NPU patch 是否实际生效，再建立最小复现。
 
-从本技能仓根目录明确指定文件，例如：
+请读取 skills/vllm-ascend-mamba-spec-accuracy/SKILL.md，定位 spec off 正常、
+spec on 在第二个 chunk 后漂移的问题，先找同一前缀下的 target logits/state 首差。
 
-> 请读取 `vllm-ascend-mamba-debug/SKILL.md`，结合这条启动命令和报错，确认 V2 runner、MTP speculator 和 NPU patch 是否实际生效，再做最小复现。
+请读取 skills/vllm-ascend-lora-profile/SKILL.md，分析 max_loras 从 1 改成 4
+后 decode 变慢的问题，区分冷加载、暖机、graph 与稳态计算，并给出 NPU 采集方案。
+```
 
-> 请读取 `vllm-ascend-mamba-profile/SKILL.md`，为 Qwen GDN+MTP 设计 prefill 的 NPU profiling，分别保留无采集基线和短窗口 trace，核实当前参数能否透传。
+## 离线 dump 比较器
 
-> 请读取 `vllm-ascend-mamba-accuracy/SKILL.md`，定位 spec off 正常、spec on 在第二个 chunk 后漂移的问题，先找同一前缀下的 target logits/state 首差。
+[compare_dumps.py](skills/vllm-ascend-mamba-spec-accuracy/scripts/compare_dumps.py) 仅依赖 Python 标准库，按逻辑 key 比较 JSON/JSONL 小样本，支持整数精确比较、浮点容差、shape/dtype 检查、缺失记录和 NaN/Inf 检查，并报告首差与误差统计。
 
-> 请读取 `vllm-ascend-mamba-state-cache/SKILL.md`，检查 V2 align 模式 warm prefix hit 后请求重排和跨块 copy，给出状态索引与 connector 时序证据。
+在 Linux 环境将 `$PYTHON` 设为已确认可用的 Python 3 解释器，从本技能仓根目录运行，替换两个 dump 路径：
 
-> 请读取 `vllm-ascend-mamba-dev/SKILL.md`，为本次 Mamba 投机功能改动选择实现位置，并扩展最小的 metadata、NPU state 和模型回归。
+```bash
+"$PYTHON" skills/vllm-ascend-mamba-spec-accuracy/scripts/compare_dumps.py ref.jsonl candidate.jsonl --atol 0.001 --rtol 0.001
+```
 
-## 离线 dump 比较工具
+`0.001` 仅演示参数语法，不是推荐容差。记录格式、采集要求和退出码见 [dump-format.md](skills/vllm-ascend-mamba-spec-accuracy/references/dump-format.md)。比较器不自动添加模型 hook，也不证明未采样张量或端到端推理正确。
 
-精度技能包含 [compare_dumps.py](vllm-ascend-mamba-accuracy/scripts/compare_dumps.py)，用 Python 标准库读取 JSON/JSONL，按逻辑 key 比较：
+## 代码快照与验证边界
 
-- token/indices/counts 精确值；tensor 的显式绝对和相对容差。
-- shape/dtype、缺失或多余记录、重复 key、NaN/Inf。
-- 首差坐标、异常元素数和最大误差。
-
-格式和采集边界见 [dump-format.md](vllm-ascend-mamba-accuracy/references/dump-format.md)。它是已采集小样本的比较器，不自动给模型加 hook，也不代表未采样张量通过验证。
-
-## 来源与验证边界
-
-编写日期：2026-10-04。代码快照：
+编写基线日期：2026-10-04。
 
 - vLLM：`d61081dc3d3f1740a5d8bf82608b62974393c2de`
 - vLLM-Ascend：`9b8fc5d728e1ea54dc277562b296112d905e15c1`
 
-技能按实际源码符号、patch 注册链和测试断言编写，使用时仍需记录部署环境与当前 HEAD。快照不表示这两个版本或所有模型/并行/graph 组合已完成兼容性验证。
+使用时核对实际 HEAD、未提交修改、包导入路径与设备环境；版本变化后按符号重新定位实现。源码快照不表示所有模型、并行、量化和 graph 组合均已验证兼容。
 
-已进行 skill 格式校验、引用路径检查、独立故障场景试读，以及比较脚本的本地行为验证。文档中的 Linux NPU 命令是待执行模板；这些验证不包含模型推理、NPU 算子测试或 profiler 采集。
+已进行技能格式校验、引用路径检查、独立故障场景审阅及比较器的本地行为验证。未运行模型推理、NPU 算子测试或 profiler 采集，也未实测加速比。文档中的 Linux NPU 命令是待执行模板，需要按部署环境调整模型路径、解释器、设备规模与输出目录。

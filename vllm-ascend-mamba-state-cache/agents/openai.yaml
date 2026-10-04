@@ -1,3 +1,0 @@
-interface:
-  display_name: "Mamba 状态缓存与回滚"
-  short_description: "排查跨块状态拷贝、投机拒绝回滚、请求重排和前缀缓存恢复问题"

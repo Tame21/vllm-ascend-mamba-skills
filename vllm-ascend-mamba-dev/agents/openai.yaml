@@ -1,3 +1,0 @@
-interface:
-  display_name: "Mamba 开发与回归"
-  short_description: "梳理上下游接口与实现层级，为 Mamba 投机推理开发选择回归验证"
