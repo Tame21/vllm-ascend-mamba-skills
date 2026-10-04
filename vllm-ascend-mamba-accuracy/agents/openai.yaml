@@ -1,0 +1,3 @@
+interface:
+  display_name: "Mamba 精度首差定位"
+  short_description: "定位 token、logits 和 recurrent state 的精度首差"

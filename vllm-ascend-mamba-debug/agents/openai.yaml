@@ -1,0 +1,3 @@
+interface:
+  display_name: "Mamba 投机推理排障"
+  short_description: "结合 vLLM 与 Ascend 调用链定位投机推理和状态异常"

@@ -1,0 +1,3 @@
+interface:
+  display_name: "Mamba 性能采集"
+  short_description: "采集 NPU profiling 并分析 prefill 与投机推理性能"
